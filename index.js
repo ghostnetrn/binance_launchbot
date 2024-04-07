@@ -19,11 +19,14 @@ let buyPrice = 0;
 let sendMessage = false;
 let message = null;
 
-ws.on("error", (err) => {
+ws.on("error", async (err) => {
   console.log("WS Error");
   console.error(err);
-  bot.telegram.sendMessage(process.env.CHAT_ID, err);
-  bot.telegram.sendMessage(process.env.CHAT_ID, "O bot foi parado! Verifique");
+  await bot.telegram.sendMessage(process.env.CHAT_ID, err);
+  await bot.telegram.sendMessage(
+    process.env.CHAT_ID,
+    "O bot foi parado! Verifique"
+  );
   process.exit(1);
 });
 
@@ -64,8 +67,8 @@ ws.onmessage = async (event) => {
 
       if (order.status !== "FILLED") {
         console.log(order);
-        bot.telegram.sendMessage(process.env.CHAT_ID, order);
-        bot.telegram.sendMessage(
+        await bot.telegram.sendMessage(process.env.CHAT_ID, order);
+        await bot.telegram.sendMessage(
           process.env.CHAT_ID,
           "O bot foi parado! Verifique"
         );
@@ -82,11 +85,11 @@ ws.onmessage = async (event) => {
         bot.telegram.sendMessage(process.env.CHAT_ID, order);
       } else {
         console.log(`Sold at ${new Date()} by ${order.fills[0].price}`);
-        bot.telegram.sendMessage(
+        await bot.telegram.sendMessage(
           process.env.CHAT_ID,
           `Sold at ${new Date()} by ${order.fills[0].price}`
         );
-        bot.telegram.sendMessage(
+        await bot.telegram.sendMessage(
           process.env.CHAT_ID,
           "O bot foi parado! Verifique"
         );
@@ -95,8 +98,8 @@ ws.onmessage = async (event) => {
     }
   } catch (err) {
     console.error(err);
-    bot.telegram.sendMessage(process.env.CHAT_ID, err);
-    bot.telegram.sendMessage(
+    await bot.telegram.sendMessage(process.env.CHAT_ID, err);
+    await bot.telegram.sendMessage(
       process.env.CHAT_ID,
       "O bot foi parado! Verifique"
     );
