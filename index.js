@@ -84,14 +84,18 @@ ws.onmessage = async (event) => {
         console.log(order);
         bot.telegram.sendMessage(process.env.CHAT_ID, order);
       } else {
-        console.log(`Sold at ${new Date()} by ${order.fills[0].price}`);
+        const soldPrice = parseFloat(order.fills[0].price).toFixed(2);
+        const soldDate = new Date().toLocaleString("pt-BR");
+        console.log(`Sold at ${soldDate} by USD ${soldPrice}`);
+
         await bot.telegram.sendMessage(
           process.env.CHAT_ID,
-          `Sold at ${new Date()} by ${order.fills[0].price}`
+          `Vendido em ${soldDate} por ${order.fills[0].price}`
         );
         await bot.telegram.sendMessage(
           process.env.CHAT_ID,
-          "O bot foi parado! Verifique"
+          "*O bot foi parado! Verifique*",
+          { parse_mode: "Markdown" }
         );
         process.exit(1);
       }
