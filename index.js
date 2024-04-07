@@ -1,6 +1,6 @@
 require("dotenv").config();
 const api = require("./api");
-const { Telegraf } = require("telegraf");
+const { Telegraf, Markup } = require("telegraf");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -17,11 +17,13 @@ const ws = new WebSocket(
 let quantity = 0;
 let buyPrice = 0;
 let sendMessage = false;
+let message = null;
 
 ws.on("error", (err) => {
   console.log("WS Error");
   console.error(err);
   bot.telegram.sendMessage(process.env.CHAT_ID, err);
+  bot.telegram.sendMessage(process.env.CHAT_ID, "O bot foi parado! Verifique");
   process.exit(1);
 });
 
@@ -38,18 +40,20 @@ ws.onmessage = async (event) => {
     console.log(`Notional: ${buyPrice * quantity}`);
     console.log(`Target Price: ${buyPrice * PROFIT}`);
 
-    const message = `
-Symbol: ${obj.s}
-Best ask: ${obj.a}
-Best bid: ${obj.b}
-Buy Price: ${buyPrice}
-Qty: ${quantity}
-Notional: ${buyPrice * quantity}
-Target Price: ${buyPrice * PROFIT}
+    message = `
+*Symbol*: ${obj.s}
+*Best ask*: ${obj.a}
+*Best bid*: ${obj.b}
+*Buy Price*: ${buyPrice}
+*Qty*: ${quantity}
+*Notional*: ${buyPrice * quantity}
+*Target Price*: ${buyPrice * PROFIT}
 `;
 
     if (sendMessage) {
-      bot.telegram.sendMessage(process.env.CHAT_ID, message);
+      bot.telegram.sendMessage(process.env.CHAT_ID, message, {
+        parse_mode: "Markdown",
+      });
       sendMessage = false;
     }
 
@@ -61,6 +65,10 @@ Target Price: ${buyPrice * PROFIT}
       if (order.status !== "FILLED") {
         console.log(order);
         bot.telegram.sendMessage(process.env.CHAT_ID, order);
+        bot.telegram.sendMessage(
+          process.env.CHAT_ID,
+          "O bot foi parado! Verifique"
+        );
         process.exit(1);
       }
 
@@ -78,12 +86,56 @@ Target Price: ${buyPrice * PROFIT}
           process.env.CHAT_ID,
           `Sold at ${new Date()} by ${order.fills[0].price}`
         );
+        bot.telegram.sendMessage(
+          process.env.CHAT_ID,
+          "O bot foi parado! Verifique"
+        );
         process.exit(1);
       }
     }
   } catch (err) {
     console.error(err);
     bot.telegram.sendMessage(process.env.CHAT_ID, err);
+    bot.telegram.sendMessage(
+      process.env.CHAT_ID,
+      "O bot foi parado! Verifique"
+    );
     process.exit(1);
   }
 };
+
+// Telegram
+bot.start((ctx) =>
+  ctx.reply("Bot para lançamento de criptomoedas na Binance", keyboard)
+);
+
+// Telegram Keyboard
+const keyboard = Markup.keyboard([
+  ["🧾 Status", "📖 Help"],
+  ["🔍 Vídeo tutorial"],
+])
+  .oneTime()
+  .resize();
+
+bot.hears("🔍 Vídeo tutorial", async (ctx) => {
+  ctx.reply("https://www.youtube.com/watch?v=rlZ_R70p3OQ", keyboard);
+});
+
+bot.hears("🧾 Status", async (ctx) => {
+  ctx.reply(message, { parse_mode: "Markdown" });
+});
+
+bot.hears("📖 Help", async (ctx) => {
+  ctx.replyWithMarkdown(
+    `*Comandos disponíveis:* 
+          ============  
+      *🧾 Status:* Status da operação.\n
+      *📖 Help* Ajuda.\n
+      *🔍Vídeo*
+          ============
+          `,
+    keyboard
+  );
+});
+
+bot.launch();
