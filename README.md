@@ -1,6 +1,6 @@
 # Bot de Lançamento de Criptomoedas na Binance
 
-Este é um bot desenvolvido para automatizar o lançamento de criptomoedas na Binance.
+Este é um bot desenvolvido para automatizar o lançamento de criptomoedas na Binance, adaptado a partir do vídeo disponível em https://www.youtube.com/watch?v=rlZ_R70p3OQ
 
 ## Configuração
 
