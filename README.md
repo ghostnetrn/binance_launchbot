@@ -18,7 +18,9 @@ Este é um bot desenvolvido para automatizar o lançamento de criptomoedas na Bi
    ```
 
 3. **Configurar o arquivo `.env`:**
+
    Para rodar em Produção: renomeie o arquivo `.env.example` para `.env`
+   
    Para rodar em testnet: renomeie o arquivo `.env.example`para `.env.local`
 
    ```
@@ -32,13 +34,14 @@ Este é um bot desenvolvido para automatizar o lançamento de criptomoedas na Bi
    CHAT_ID=id_do_chat_para_enviar_mensagens
    ```
 
-4. **Iniciar o Bot:**
-   ## para rodar em produção
+5. **Iniciar o Bot:**
+   
+   *para rodar em produção*
    ```
    npm start
    ```
    
-   ## para rodar em testnet
+   *para rodar em testnet*
    ```
    npm run testnet
    ```
