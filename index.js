@@ -34,23 +34,30 @@ ws.onmessage = async (event) => {
   try {
     const obj = JSON.parse(event.data);
     console.clear();
+    const targetPrice = (buyPrice * PROFIT).toFixed(2);
+    const notional = `${buyPrice * quantity}`;
+    const percentual = ((PROFIT - 1) * 100).toFixed() + "%";
 
     console.log(`Symbol: ${obj.s}`);
     console.log(`Best ask: ${obj.a}`);
     console.log(`Best bid: ${obj.b}`);
     console.log(`Buy Price: ${buyPrice}`);
+    console.log(`Profit: ${percentual}`);
     console.log(`Qty: ${quantity}`);
-    console.log(`Notional: ${buyPrice * quantity}`);
-    console.log(`Target Price: ${buyPrice * PROFIT}`);
+    console.log(`Notional: ${notional}`);
+    console.log(`Target Price: ${targetPrice} ${percentual}`);
 
     message = `
 *Symbol*: ${obj.s}
 *Best ask*: ${obj.a}
 *Best bid*: ${obj.b}
+
 *Buy Price*: ${buyPrice}
+*PROFIT*: ${percentual}
 *Qty*: ${quantity}
 *Notional*: ${buyPrice * quantity}
-*Target Price*: ${buyPrice * PROFIT}
+
+*Target Price*: ${buyPrice * PROFIT} 
 `;
 
     if (sendMessage) {
