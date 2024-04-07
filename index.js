@@ -22,7 +22,7 @@ let message = null;
 ws.on("error", async (err) => {
   console.log("WS Error");
   console.error(err);
-  await bot.telegram.sendMessage(process.env.CHAT_ID, err);
+  await bot.telegram.sendMessage(process.env.CHAT_ID, JSON.stringify(err));
   await bot.telegram.sendMessage(
     process.env.CHAT_ID,
     "O bot foi parado! Verifique"
@@ -109,7 +109,7 @@ ws.onmessage = async (event) => {
     }
   } catch (err) {
     console.error(err);
-    await bot.telegram.sendMessage(process.env.CHAT_ID, err);
+    await bot.telegram.sendMessage(process.env.CHAT_ID, JSON.stringify(err));
     await bot.telegram.sendMessage(
       process.env.CHAT_ID,
       "O bot foi parado! Verifique"
