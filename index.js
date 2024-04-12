@@ -19,7 +19,7 @@ const ws = new WebSocket(
 let quantity = 0;
 let buyPrice = 0;
 let sendMessage = false;
-let message = null;
+let message = null ?? `Aguardando lançamento da moeda ${SYMBOL}`;
 
 ws.on("error", async (err) => {
   console.log("WS Error");
