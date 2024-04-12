@@ -33,6 +33,7 @@ ws.on("error", async (err) => {
 ws.onmessage = async (event) => {
   try {
     const obj = JSON.parse(event.data);
+    await bot.telegram.sendMessage(process.env.CHAT_ID, `Iniciando monitoramento da moeda ${SYMBOL}`);
     console.clear();
     const targetPrice = (buyPrice * PROFIT).toFixed(2);
     const notional = `${buyPrice * quantity}`;
