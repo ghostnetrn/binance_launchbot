@@ -8,6 +8,8 @@ const SYMBOL = process.env.SYMBOL;
 const PROFIT = parseFloat(process.env.PROFIT);
 const BUY_QTY = parseFloat(process.env.BUY_QTY);
 
+await bot.telegram.sendMessage(process.env.CHAT_ID, `Iniciando monitoramento da moeda ${SYMBOL}`);
+
 const WebSocket = require("ws");
 const ws = new WebSocket(
   `wss://stream.binance.com:9443/ws/${SYMBOL.toLowerCase()}@bookTicker`
@@ -33,7 +35,6 @@ ws.on("error", async (err) => {
 ws.onmessage = async (event) => {
   try {
     const obj = JSON.parse(event.data);
-    await bot.telegram.sendMessage(process.env.CHAT_ID, `Iniciando monitoramento da moeda ${SYMBOL}`);
     console.clear();
     const targetPrice = (buyPrice * PROFIT).toFixed(2);
     const notional = `${buyPrice * quantity}`;
