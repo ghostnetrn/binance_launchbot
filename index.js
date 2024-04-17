@@ -183,13 +183,13 @@ ws.onmessage = async (event) => {
 
       return;
     } else {
-      if (parseFloat(obj.b) > targetSell) {
+      if (quantity > 0 && parseFloat(obj.b) > targetSell) {
         // Se o preço atingir a meta de lucro
         PROFIT *= PROFIT_INCREASE_PERCENT;
         percentual = ((PROFIT - 1) * 100).toFixed() + "%"; // Recalcula o percentual de lucro
         targetSell = buyPrice * PROFIT;
         targetPrice = (targetSell).toFixed(2);
-      } else if (parseFloat(obj.b) < targetSell - (targetSell * PROFIT_DECREASE_PERCENT))  {
+      } else if (quantity > 0 && parseFloat(obj.b) < targetSell - (targetSell * PROFIT_DECREASE_PERCENT))  {
         // Se o preço cair abaixo do lucro desejado
         const order = await api.sell(SYMBOL, quantity);
         if (order.status !== "FILLED") {
