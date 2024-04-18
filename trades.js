@@ -1,7 +1,7 @@
 require("dotenv").config();
 const fs = require("fs");
 const api = require("./api");
-const SYMBOL = "OMNIUSDT";
+const SYMBOL = process.env.SYMBOL;
 
 (async () => {
   const data = await api.trades(SYMBOL);
@@ -13,9 +13,18 @@ const SYMBOL = "OMNIUSDT";
       // Formata os campos conforme as regras
       const formattedRow = {
         ...obj,
-        price: parseFloat(obj.price).toFixed(2),
-        qty: parseFloat(obj.qty).toFixed(2),
-        quoteQty: parseFloat(obj.quoteQty).toFixed(2),
+        price: parseFloat(obj.price).toLocaleString("pt-BR", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }),
+        qty: parseFloat(obj.qty).toLocaleString("pt-BR", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }),
+        quoteQty: parseFloat(obj.quoteQty).toLocaleString("pt-BR", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }),
         time: obj.time.toString(), // Retorna o número completo
       };
       return Object.values(formattedRow).join(";");
