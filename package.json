@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "trades": "node trades.js",
     "testnet": "dotenv -e .env.local node index.js"
   },
   "keywords": [],
