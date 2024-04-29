@@ -59,6 +59,12 @@ _para rodar em testnet_
 npm run testnet
 ```
 
+_para capturar os dados dos trades realizados_
+
+```
+npm run trades
+```
+
 ## Comandos Disponíveis
 
 - **🧾 Status**: Verifica o status da operação atual.
