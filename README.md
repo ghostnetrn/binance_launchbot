@@ -45,24 +45,18 @@ Este é um bot desenvolvido para automatizar o lançamento de criptomoedas na Bi
    - CHAT_ID: ID do chat do Telegram para enviar mensagens.
    ```
 
-```
+4. **Iniciar o Bot:**
 
-5. **Iniciar o Bot:**
-
- _para rodar em produção_
+_para rodar em produção_
 
 ```
-
 npm start
-
 ```
 
 _para rodar em testnet_
 
 ```
-
 npm run testnet
-
 ```
 
 ## Comandos Disponíveis
@@ -78,4 +72,3 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou env
 ## Licença
 
 Este projeto está licenciado sob a [Licença MIT](LICENSE).
-```
