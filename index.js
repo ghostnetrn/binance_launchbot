@@ -136,6 +136,19 @@ ws.onmessage = async (event) => {
     console.log(`Notional: ${buyPrice * quantity}`);
     console.log(`Target Price: ${buyPrice * PROFIT}`);
 
+    message = `
+*Symbol*: ${obj.s}
+*Best ask*: ${obj.a}
+*Best bid*: ${obj.b}
+
+*Buy Price*: ${buyPrice}
+*PROFIT*: ${percentual}
+*Qty*: ${quantity}
+*Notional*: ${buyPrice * quantity}
+
+*Target Price*: ${buyPrice * PROFIT}
+`;
+
     if (quantity === 0) {
       quantity = -1;
 
