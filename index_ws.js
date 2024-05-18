@@ -4,7 +4,7 @@ const crypto = require("crypto");
 
 const SYMBOL = process.env.SYMBOL;
 const PROFIT = parseFloat(process.env.PROFIT);
-const BUY_QTY = parseFloat(process.env.BUY_QTY); // Usando como quoteOrderQty
+const BUY_QTY = parseFloat(process.env.BUY_QTY);
 const API_KEY = process.env.API_KEY;
 const API_SECRET = process.env.API_SECRET;
 const wsUrl = process.env.API_URL;
