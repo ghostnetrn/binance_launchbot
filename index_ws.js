@@ -7,7 +7,7 @@ const PROFIT = parseFloat(process.env.PROFIT);
 const BUY_QTY = parseFloat(process.env.BUY_QTY); // Usando como quoteOrderQty
 const API_KEY = process.env.API_KEY;
 const API_SECRET = process.env.API_SECRET;
-const wsUrl = "wss://testnet.binance.vision/ws-api/v3";
+const wsUrl = process.env.API_URL;
 const ws = new WebSocket(wsUrl);
 
 // Variáveis para rastreamento da quantidade e preço de compra
