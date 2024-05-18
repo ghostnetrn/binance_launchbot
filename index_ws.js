@@ -140,19 +140,19 @@ bookTickerWs.on("message", async (event) => {
 
       buy(SYMBOL, BUY_QTY, (order) => {
         console.log("Resposta da ordem de compra:", order); // Log para depuração
-        if (!order || order.status !== "FILLED") {
+        if (!order || order.result.status !== "FILLED") {
           console.log(order);
           process.exit(1);
         }
 
         quantity = parseFloat(order.result.executedQty);
         buyPrice = parseFloat(order.result.fills[0].price);
+        return;
       });
-      return;
     } else if (quantity > 0 && parseFloat(obj.b) > buyPrice * PROFIT) {
       sell(SYMBOL, quantity, (order) => {
         console.log("Resposta da ordem de venda:", order); // Log para depuração
-        if (!order || order.status !== "FILLED") {
+        if (!order || order.result.status !== "FILLED") {
           console.log(order);
         } else {
           console.log(
