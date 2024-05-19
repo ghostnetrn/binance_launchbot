@@ -8,13 +8,10 @@ const BUY_QTY = parseFloat(process.env.BUY_QTY);
 const API_KEY = process.env.API_KEY;
 const API_SECRET = process.env.API_SECRET;
 const wsUrl = process.env.API_URL;
-const ws = new WebSocket(wsUrl);
 
-// Variáveis para rastreamento da quantidade e preço de compra
 let quantity = 0;
 let buyPrice = 0;
 let isConnected = false;
-let orderQueue = [];
 let responseCallbacks = {};
 
 // Função para criar a assinatura HMAC SHA256
@@ -27,20 +24,28 @@ function createSignature(params, secret) {
 }
 
 // Função para enviar novas ordens
-function newOrder(symbol, side, quoteOrderQty, type = "MARKET", callback) {
-  if (!API_KEY || !API_SECRET) {
-    throw new Error("API KEY e SECRET KEY são necessários");
-  }
-
+function newOrder(
+  symbol,
+  side,
+  orderQty,
+  type = "MARKET",
+  isBuyOrder = true,
+  callback
+) {
   const params = {
     symbol,
     side,
     type,
-    quoteOrderQty,
     timestamp: Date.now(),
     recvWindow: 60000,
     apiKey: API_KEY,
   };
+
+  if (isBuyOrder) {
+    params.quoteOrderQty = orderQty;
+  } else {
+    params.quantity = orderQty;
+  }
 
   params.signature = createSignature(params, API_SECRET);
 
@@ -56,40 +61,29 @@ function newOrder(symbol, side, quoteOrderQty, type = "MARKET", callback) {
     ws.send(payload);
     responseCallbacks[data.id] = callback;
   } else {
-    orderQueue.push({ payload, callback });
+    console.error("WebSocket não está conectado.");
   }
 }
 
 // Funções de compra e venda
 function buy(symbol, quoteOrderQty, callback) {
-  newOrder(symbol, "BUY", quoteOrderQty, "MARKET", callback);
+  newOrder(symbol, "BUY", quoteOrderQty, "MARKET", true, callback);
 }
 
 function sell(symbol, quantity, callback) {
-  newOrder(symbol, "SELL", quantity, "MARKET", callback);
+  newOrder(symbol, "SELL", quantity, "MARKET", false, callback);
 }
 
 // Conexão WebSocket
+const ws = new WebSocket(wsUrl);
+
 ws.on("open", () => {
   console.log("Conexão WebSocket aberta");
   isConnected = true;
-
-  // Processa qualquer ordem na fila
-  while (orderQueue.length > 0) {
-    const { payload, callback } = orderQueue.shift();
-    ws.send(payload);
-    responseCallbacks[JSON.parse(payload).id] = callback;
-  }
 });
 
 ws.on("message", (message) => {
-  if (message === "pong") {
-    console.log("Recebido pong do servidor");
-    return;
-  }
-
   const response = JSON.parse(message);
-  console.log("Mensagem recebida:", response); // Log para depuração
   if (response.id && responseCallbacks[response.id]) {
     responseCallbacks[response.id](response);
     delete responseCallbacks[response.id];
@@ -97,7 +91,6 @@ ws.on("message", (message) => {
 });
 
 ws.on("ping", () => {
-  console.log("Recebido ping do servidor");
   ws.pong();
 });
 
@@ -108,7 +101,7 @@ ws.on("error", (error) => {
 
 ws.on("close", () => {
   console.log("Conexão WebSocket fechada");
-  isConnected = false;
+  process.exit(1);
 });
 
 // WebSocket para monitorar o book ticker
@@ -117,16 +110,15 @@ const bookTickerWs = new WebSocket(
 );
 
 bookTickerWs.on("error", (err) => {
-  console.log("Erro no WebSocket");
-  console.error(err);
+  console.error("Erro no WebSocket", err);
   process.exit(1);
 });
 
 bookTickerWs.on("message", async (event) => {
   try {
     const obj = JSON.parse(event);
-    console.clear();
 
+    console.clear();
     console.log(`Symbol: ${obj.s}`);
     console.log(`Best ask: ${obj.a}`);
     console.log(`Best bid: ${obj.b}`);
@@ -137,33 +129,32 @@ bookTickerWs.on("message", async (event) => {
 
     if (quantity === 0) {
       quantity = -1;
-
       buy(SYMBOL, BUY_QTY, (order) => {
-        console.log("Resposta da ordem de compra:", order); // Log para depuração
-        if (!order || order.result.status !== "FILLED") {
-          console.log(order);
+        console.log("Resposta da ordem de compra:", order);
+        if (!order || !order.result || order.result.status !== "FILLED") {
+          console.error("Erro ao preencher ordem de compra", order);
           process.exit(1);
         }
-
         quantity = parseFloat(order.result.executedQty);
         buyPrice = parseFloat(order.result.fills[0].price);
-        return;
       });
     } else if (quantity > 0 && parseFloat(obj.b) > buyPrice * PROFIT) {
       sell(SYMBOL, quantity, (order) => {
-        console.log("Resposta da ordem de venda:", order); // Log para depuração
-        if (!order || order.result.status !== "FILLED") {
-          console.log(order);
+        console.log("Resposta da ordem de venda:", order);
+        if (!order || !order.result || order.result.status !== "FILLED") {
+          console.error("Erro ao preencher ordem de venda", order);
         } else {
           console.log(
-            `Vendido em ${new Date()} por ${order.result.fills[0].price}`
+            `Venda realizada com sucesso em ${new Date()} por ${
+              order.result.fills[0].price
+            }`
           );
-          process.exit(1);
+          process.exit(0);
         }
       });
     }
   } catch (err) {
-    console.error(err);
+    console.error("Erro ao processar mensagem do WebSocket", err);
     process.exit(1);
   }
 });

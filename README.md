@@ -10,6 +10,7 @@ Este é um bot desenvolvido para automatizar o lançamento de criptomoedas na Bi
 - CRIPTOMOEDAS É INVESTIMENTO DE RISCO, TENHA ISSO EM MENTE.
 - NÃO COMPARTILHE SUAS VARIÁVEIS DE AMBIENTE E ARQUIVO .ENV COM NINGUÉM, NEM COMIGO.
 - AO USAR ESTES ROBÔS, VOCÊ ASSUME QUALQUER RISCO FINANCEIRO QUE ELES POSSAM LHE CAUSAR.
+- TENHA BNB PARA PAGAR AS TAXAS
 
 ## Configuração
 
@@ -44,6 +45,8 @@ Este é um bot desenvolvido para automatizar o lançamento de criptomoedas na Bi
    - BOT_TOKEN: Token de autenticação do bot do Telegram.
    - CHAT_ID: ID do chat do Telegram para enviar mensagens.
    ```
+
+TENHA BNB PARA PAGAR AS TAXAS DE TRADER, PARA QUE O BOT FUNCIONE CORRETAMENTE.
 
 4. **Iniciar o Bot:**
 
