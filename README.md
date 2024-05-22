@@ -39,7 +39,7 @@ Este é um bot desenvolvido para automatizar o lançamento de criptomoedas na Bi
    - BUY_QTY: Indica a quantidade da moeda que será comprada em cada negociação.
    - PROFIT_INCREASE_PERCENT: Porcentagem pelo qual o lucro será aumentado.
    - PROFIT_DECREASE_PERCENT: Porcentagem pelo qual o lucro será diminuído.
-   - API_URL: URL da API usada para acessar dados de mercado e executar negociações. https://testnet.binance.vision/api ou https://api.binance.com/api
+   - API_URL: URL da API usada para acessar dados de mercado e executar negociações. https://testnet.binance.vision/api, https://api.binance.com/api, wss://ws-api.binance.com:443/ws-api/v3 ou wss://testnet.binance.vision/ws-api/v3
    - API_KEY: Chave de autenticação para acessar a API da Binance. Saiba mais em https://www.youtube.com/watch?v=-6bF6a6ecIs
    - SECRET_KEY: Chave secreta associada à chave de API da Binance. Saiba mais em https://www.youtube.com/watch?v=-6bF6a6ecIs
    - BOT_TOKEN: Token de autenticação do bot do Telegram.
@@ -60,6 +60,12 @@ _para rodar em testnet_
 
 ```
 npm run testnet
+```
+
+_para rodar usando websocket_
+
+```
+npm run ws
 ```
 
 _para capturar os dados dos trades realizados_
