@@ -136,6 +136,8 @@ ws.onmessage = async (event) => {
     console.log(`Notional: ${buyPrice * quantity}`);
     console.log(`Target Price: ${buyPrice * PROFIT}`);
 
+    let percentual = ((PROFIT - 1) * 100).toFixed() + "%";
+
     message = `
 *Symbol*: ${obj.s}
 *Best ask*: ${obj.a}
