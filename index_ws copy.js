@@ -1,7 +1,6 @@
 require("dotenv").config();
 const WebSocket = require("ws");
 const crypto = require("crypto");
-const logger = require('./logger');
 
 const SYMBOL = process.env.SYMBOL;
 const PROFIT = parseFloat(process.env.PROFIT);
@@ -85,7 +84,6 @@ ws.on("open", () => {
 
 ws.on("message", (message) => {
   const response = JSON.parse(message);
-  logger.info(`Received data: ${JSON.stringify(response)}`);
   if (response.id && responseCallbacks[response.id]) {
     responseCallbacks[response.id](response);
     delete responseCallbacks[response.id];
@@ -98,7 +96,6 @@ ws.on("ping", () => {
 
 ws.on("error", (error) => {
   console.error("Erro WebSocket:", error);
-  logger.error("Erro WebSocket: " + JSON.stringify(error));
   process.exit(1);
 });
 
@@ -114,14 +111,12 @@ const bookTickerWs = new WebSocket(
 
 bookTickerWs.on("error", (err) => {
   console.error("Erro no WebSocket", err);
-  logger.error("WS Error: " + err.message);
   process.exit(1);
 });
 
 bookTickerWs.on("message", async (event) => {
   try {
     const obj = JSON.parse(event);
-    logger.info(`Received data: ${JSON.stringify(obj)}`);
 
     console.clear();
     console.log(`Symbol: ${obj.s}`);
@@ -137,7 +132,6 @@ bookTickerWs.on("message", async (event) => {
       buy(SYMBOL, BUY_QTY, (order) => {
         console.log("Resposta da ordem de compra:", order);
         if (!order || !order.result || order.result.status !== "FILLED") {
-          logger.error("Erro ao preencher ordem de compra: " + JSON.stringify(order));
           console.error("Erro ao preencher ordem de compra", order);
           process.exit(1);
         }
@@ -148,7 +142,6 @@ bookTickerWs.on("message", async (event) => {
       sell(SYMBOL, quantity, (order) => {
         console.log("Resposta da ordem de venda:", order);
         if (!order || !order.result || order.result.status !== "FILLED") {
-          logger.error("Erro ao preencher ordem de venda: " + JSON.stringify(order));
           console.error("Erro ao preencher ordem de venda", order);
         } else {
           console.log(
@@ -162,7 +155,6 @@ bookTickerWs.on("message", async (event) => {
     }
   } catch (err) {
     console.error("Erro ao processar mensagem do WebSocket", err);
-    logger.error("Erro ao processar mensagem do WebSocket: " + JSON.stringify(err));
     process.exit(1);
   }
 });
